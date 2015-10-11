@@ -1,15 +1,22 @@
+body {
+    background: #000;
+}
+
 svg {
-  font: 10px sans-serif;
+    font: 10px sans-serif;
+    
+    circle {
+    }
 }
 
 .overlay {
-  fill: none;
-  pointer-events: all;
+    fill: none;
+    pointer-events: all;
 }
 
 .axis path,
 .axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
+    fill: none;
+    stroke: #fff;
+    shape-rendering: crispEdges;
 }

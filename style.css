@@ -1,17 +1,21 @@
 /* line 1, /Users/Chris/Development/NextGenLessons/redshift/style.scss */
+body {
+  background: #000; }
+
+/* line 5, /Users/Chris/Development/NextGenLessons/redshift/style.scss */
 svg {
   font: 10px sans-serif; }
 
-/* line 5, /Users/Chris/Development/NextGenLessons/redshift/style.scss */
+/* line 12, /Users/Chris/Development/NextGenLessons/redshift/style.scss */
 .overlay {
   fill: none;
   pointer-events: all; }
 
-/* line 11, /Users/Chris/Development/NextGenLessons/redshift/style.scss */
+/* line 18, /Users/Chris/Development/NextGenLessons/redshift/style.scss */
 .axis path,
 .axis line {
   fill: none;
-  stroke: #000;
+  stroke: #fff;
   shape-rendering: crispEdges; }
 
 /*# sourceMappingURL=style.css.map */
