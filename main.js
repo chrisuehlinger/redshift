@@ -1,5 +1,5 @@
-var width = screen.width,
-    height = screen.height;
+var width = window.innerWidth,
+    height = window.innerHeight;
 
 var randomX = d3.random.normal(width / 2, width / 5),
     randomY = d3.random.normal(height / 2, height / 5);
