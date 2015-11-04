@@ -167,7 +167,7 @@ $(window).on('keypress', function (e) {
 $('svg').on('click',function(e){
     var angleToCursor = Math.atan2(ship.position.y - e.pageY, ship.position.x - e.pageX);
     ship.velocity.x -= Math.cos(angleToCursor)*constants.thrust;
-    ship.velocity.y += Math.sin(angleToCursor)*constants.thrust;
+    //ship.velocity.y += Math.sin(angleToCursor)*constants.thrust;
 });
 
 d3.timer(function () {
