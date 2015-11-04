@@ -11,6 +11,19 @@ var data = d3.range(1000).map(function () {
   ];
 });
 
+var constants = {
+    aberration: true,
+    speedOfLight: 3,
+    thrust: 0.01
+};
+
+window.onload = function() {
+  var gui = new dat.GUI();
+  gui.add(constants, 'lorentzAberration');
+  gui.add(constants, 'speedOfLight', 0, 5);
+  gui.add(constants, 'thrust', 0, 1);
+};
+
 var ship = {
     position: {
         x: width / 2,
@@ -66,29 +79,35 @@ shipSprite
 function render() {
     star
         .attr('transform', function (d, i) {
-            var c = [d[0], d[1]];
-            var dist = distance(c, [ship.position.x, ship.position.y]);
-            var lorentz = 1 / Math.sqrt(1 - Math.pow(ship.totalSpeed / speedOfLight, 2));
-            var stretchDist = dist*lorentz;
+            var starX, starY
+            if(constants.aberration){
+                var c = [d[0], d[1]];
+                var dist = distance(c, [ship.position.x, ship.position.y]);
+                var lorentz = 1 / Math.sqrt(1 - Math.pow(ship.totalSpeed / constants.speedOfLight, 2));
+                var stretchDist = dist*lorentz;
+
+
+                var starDirection = Math.atan2(ship.position.y - c[1], ship.position.x - c[0]);
+                var angleDifference = ship.direction - starDirection;
+                angleDifference *= (180 / Math.PI);
+                angleDifference = (angleDifference + 180) % 360 - 180;
+                angleDifference *= (Math.PI / 180);
+                var stretchAngle = Math.atan2(constants.speedOfLight * Math.sin(angleDifference), ship.totalSpeed + constants.speedOfLight * Math.cos(angleDifference));
+
+                var stretchX = ship.position.x - Math.cos(stretchAngle)*stretchDist;
+                var stretchY = ship.position.y - Math.sin(stretchAngle)*stretchDist;
+
+                if (i === 0) {
+                    console.log(Math.round(d[0]), Math.round(d[1]), Math.round(ship.position.x), Math.round(ship.position.y));
+                    //console.log(Math.round(100*ship.velocity.total / speedOfLight)/100, lorentz, Math.round(180*ship.direction/Math.PI), Math.round(180*stretchAngle/Math.PI));
+                }
         
-        
-            var starDirection = Math.atan2(ship.position.y - c[1], ship.position.x - c[0]);
-            var angleDifference = ship.direction - starDirection;
-            angleDifference *= (180 / Math.PI);
-            angleDifference = (angleDifference + 180) % 360 - 180;
-            angleDifference *= (Math.PI / 180);
-            var stretchAngle = Math.atan2(speedOfLight * Math.sin(angleDifference), ship.totalSpeed + speedOfLight * Math.cos(angleDifference));
-        
-            var stretchX = ship.velocity.x > 0 ? ship.position.x - Math.cos(stretchAngle)*stretchDist :  ship.position.x + Math.cos(stretchAngle)*stretchDist;
-            var stretchY = ship.velocity.x < 0 ? ship.position.y - Math.sin(stretchAngle)*stretchDist : ship.position.y + Math.sin(stretchAngle)*stretchDist;
-        
-            if (i === 0) {
-                console.log(Math.round(d[0]),Math.round(stretchX), Math.round(d[1]), Math.round(stretchY));
-                //console.log(Math.round(100*ship.velocity.total / speedOfLight)/100, lorentz, Math.round(180*ship.direction/Math.PI), Math.round(180*stretchAngle/Math.PI));
+                starX = x(stretchX);
+                starY = y(stretchY);
+            } else {
+                starX = x(d[0]);
+                starY = y(d[1]);
             }
-        
-            var starX = x(stretchX);
-            var starY = y(stretchY);
             return "translate(" + starX + "," + starY + ")";
         })
         .attr("fill", function (d, i) {
@@ -101,7 +120,7 @@ function render() {
             angleDifference *= (180 / Math.PI);
             angleDifference = Math.abs((angleDifference + 180) % 360 - 180) - 90;
             angleDifference *= (Math.PI / 180);
-            var doppler = angleDifference * ship.totalSpeed / speedOfLight;
+            var doppler = angleDifference * ship.totalSpeed / constants.speedOfLight;
 //            if (i === 0) {
 //                console.log(d[0], d[1], ship.position.x, ship.position.y, Math.round(100 * ship.direction / Math.PI) / 100, Math.round(100 * starDirection / Math.PI) / 100, Math.round(100 * angleDifference / Math.PI) / 100);
 //            }
@@ -131,26 +150,25 @@ function transform(d) {
 
 $(window).on('keypress', function (e) {
     //    console.log(e.which);
-    var thrust = 0.01;
     if (e.which === 115) {
-        ship.velocity.y -= thrust;
+        ship.velocity.y -= constants.thrust;
     }
     if (e.which === 119) {
-        ship.velocity.y += thrust;
+        ship.velocity.y += constants.thrust;
     }
     if (e.which === 97) {
-        ship.velocity.x -= thrust;
+        ship.velocity.x -= constants.thrust;
     }
     if (e.which === 100) {
-        ship.velocity.x += thrust;
+        ship.velocity.x += constants.thrust;
     }
 });
 
 d3.timer(function () {
     ship.direction = Math.atan2(ship.velocity.y, ship.velocity.x);
     ship.totalSpeed = Math.sqrt(Math.pow(ship.velocity.x, 2) + Math.pow(ship.velocity.y, 2));
-    if(ship.totalSpeed > speedOfLight){
-        ship.totalSpeed = speedOfLight;
+    if(ship.totalSpeed > constants.speedOfLight){
+        ship.totalSpeed = constants.speedOfLight;
         ship.velocity.x = Math.cos(ship.direction)*ship.totalSpeed;
         ship.velocity.y = Math.sin(ship.direction)*ship.totalSpeed;
     }
