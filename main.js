@@ -12,9 +12,9 @@ var data = d3.range(1000).map(function () {
 });
 
 var constants = {
-    aberration: true,
+    aberration: false,
     speedOfLight: 3,
-    thrust: 0.01
+    thrust: 0.5
 };
 
 window.onload = function() {
@@ -164,8 +164,10 @@ $(window).on('keypress', function (e) {
     }
 });
 
-$(document).on('click',function(e){
-    
+$('svg').on('mousedown touchmove',function(e){
+    var angleToCursor = Math.atan2(ship.position.y - e.pageY, ship.position.x - e.pageX);
+    ship.velocity.x -= Math.cos(angleToCursor)*constants.thrust;
+    ship.velocity.y += Math.sin(angleToCursor)*constants.thrust;
 });
 
 d3.timer(function () {
