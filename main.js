@@ -19,7 +19,7 @@ var constants = {
 
 window.onload = function() {
   var gui = new dat.GUI();
-  gui.add(constants, 'lorentzAberration');
+  gui.add(constants, 'aberration');
   gui.add(constants, 'speedOfLight', 0, 5);
   gui.add(constants, 'thrust', 0, 1);
 };
@@ -162,6 +162,10 @@ $(window).on('keypress', function (e) {
     if (e.which === 100) {
         ship.velocity.x += constants.thrust;
     }
+});
+
+$(document).on('click',function(e){
+    
 });
 
 d3.timer(function () {
